@@ -93,16 +93,30 @@
     const yesBtn = document.getElementById("yes");
     const card = document.getElementById("card");
 
-    noBtn.addEventListener("mouseenter", () => {
-      const maxX = card.clientWidth - noBtn.offsetWidth;
-      const maxY = card.clientHeight - noBtn.offsetHeight;
+    // Move "No" button away when mouse is near
+card.addEventListener("mousemove", (e) => {
+  const noRect = noBtn.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const mouseX = e.clientX - cardRect.left;
+  const mouseY = e.clientY - cardRect.top;
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+  const btnX = noBtn.offsetLeft + noBtn.offsetWidth / 2;
+  const btnY = noBtn.offsetTop + noBtn.offsetHeight / 2;
 
-      noBtn.style.left = randomX + "px";
-      noBtn.style.top = randomY + "px";
-    });
+  const dist = Math.hypot(mouseX - btnX, mouseY - btnY);
+
+  if (dist < 60) { // distance to start running away
+    const padding = 10;
+    const maxX = card.clientWidth - noBtn.offsetWidth - padding;
+    const maxY = card.clientHeight - noBtn.offsetHeight - padding;
+
+    let randomX = Math.random() * maxX;
+    let randomY = Math.random() * maxY;
+
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+  }
+});
 
     yesBtn.addEventListener("click", () => {
       card.innerHTML = `

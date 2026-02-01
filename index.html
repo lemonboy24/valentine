@@ -11,50 +11,52 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ffebf0;
-            font-family: sans-serif;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
         }
 
         .card {
             background: white;
-            padding: 3rem;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
-            width: 350px;
+            width: 320px;
+            z-index: 10;
         }
 
         #display-image {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             object-fit: contain;
-            margin-bottom: 20px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         h1 {
             color: #333;
             font-size: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 25px;
         }
 
-        /* This container keeps them side-by-side like your image */
         .btn-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 20px; 
-            position: relative;
+            gap: 20px;
+            height: 50px;
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
+            padding: 12px 28px;
+            font-size: 1.1rem;
             border-radius: 50px;
+            border: none;
             cursor: pointer;
-            transition: transform 0.1s;
+            font-weight: bold;
         }
 
         #yes-btn {
@@ -65,18 +67,22 @@
         #no-btn {
             background-color: #e9ecef;
             color: #333;
-            /* Starts without absolute/fixed position */
         }
 
-        .heart {
+        /* Confetti Styling */
+        .confetti {
             position: fixed;
-            top: -10%;
-            font-size: 1.5rem;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 100;
             animation: fall linear forwards;
         }
 
         @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+            to {
+                transform: translateY(110vh) rotate(720deg);
+            }
         }
     </style>
 </head>
@@ -98,48 +104,59 @@
         const img = document.getElementById('display-image');
         const text = document.getElementById('text');
 
-        // This function moves the button
+        // PRELOAD GIF: This helps it appear instantly
+        const successGifUrl = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBsMmxtMWg0ZnZmMG51cWoxajIza2k4Mm0zbmY5MW1tcW0wb2ZyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/31lPv5L3aIvTi/giphy.gif";
+        const tempImg = new Image();
+        tempImg.src = successGifUrl;
+
         function moveButton() {
-            // Switch to fixed position so it escapes the container
             noBtn.style.position = 'fixed';
-            
-            // Calculate random coordinates
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         }
 
-        // Trigger move on hover
         noBtn.addEventListener('mouseover', moveButton);
-        // Also trigger on click (just in case they are fast!)
-        noBtn.addEventListener('click', moveButton);
 
         yesBtn.addEventListener('click', () => {
-            text.innerHTML = "YAY! 🥳❤️";
-            
-            // Your GIPHY link
-            img.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBsMmxtMWg0ZnZmMG51cWoxajIza2k4Mm0zbmY5MW1tcW0wb2ZyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/31lPv5L3aIvTi/giphy.gif"; 
+            // Instant text and image swap
+            text.innerHTML = "YAY! Best day ever! ❤️";
+            img.src = successGifUrl; 
             
             noBtn.style.display = "none";
-            startHearts();
+            startConfetti();
         });
 
-        function startHearts() {
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 5000);
-            }, 300);
+        function startConfetti() {
+            const colors = ['#ff4d6d', '#ffb3c1', '#ff758f', '#c9184a', '#800f2f', '#70d6ff', '#ffbe0b'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    
+                    // Randomize confetti look
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.width = Math.random() * 8 + 5 + 'px';
+                    confetti.style.height = Math.random() * 12 + 5 + 'px';
+                    confetti.style.opacity = Math.random();
+                    
+                    // Randomize falling speed
+                    confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Clean up
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 20); // Creates a "stream" effect
+            }
         }
     </script>
 </body>
 </html>
+
 
 
 

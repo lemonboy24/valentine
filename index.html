@@ -12,79 +12,67 @@
             justify-content: center;
             align-items: center;
             background-color: #ffebf0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
             overflow: hidden;
-            text-align: center;
         }
 
         .card {
             background: white;
-            padding: 3rem;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
-            z-index: 10;
-            max-width: 400px;
-            width: 90%;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+            position: relative; /* Keep this relative */
         }
 
         #display-image {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             object-fit: contain;
-            margin-bottom: 20px;
-            border-radius: 15px;
-        }
-
-        h1 {
-            color: #d90429;
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
+            border-radius: 10px;
         }
 
         .btn-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
-            height: 50px; /* Prevents layout jump */
+            margin-top: 20px;
+            height: 50px;
+            position: relative; /* Container for buttons */
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
             border-radius: 50px;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-weight: bold;
         }
 
         #yes-btn {
             background-color: #ff4d6d;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            z-index: 2;
         }
 
         #no-btn {
             background-color: #adb5bd;
             color: white;
-            position: absolute; /* Crucial for moving */
+            transition: 0.1s ease; /* Smooth but fast move */
+            z-index: 10;
         }
 
-        /* Heart Animation */
         .heart {
             position: fixed;
             top: -10%;
-            font-size: 2rem;
-            color: #ff4d6d;
-            user-select: none;
-            z-index: 1;
             animation: fall linear forwards;
         }
 
         @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
+            to { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
@@ -92,7 +80,7 @@
 
     <div class="card">
         <img id="display-image" src="cute.png" alt="Cute character">
-        <h1 id="text">Shivam, will you be my valentine?</h1>
+        <h1 id="text">Shreya, will you be my valentine?</h1>
         
         <div class="btn-container">
             <button id="yes-btn">Yes</button>
@@ -106,24 +94,27 @@
         const img = document.getElementById('display-image');
         const text = document.getElementById('text');
 
-        // 1. "No" button runs away
+        // FIXED: The button starts relative, then goes absolute once it moves
         noBtn.addEventListener('mouseover', () => {
+            // Limits movement to a 300px box around the center so it doesn't fly off-screen
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            noBtn.style.position = 'fixed'; 
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         });
 
-        // 2. "Yes" button click event
         yesBtn.addEventListener('click', () => {
             text.innerHTML = "Yay! Best day ever! ❤️";
-            img.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBsMmxtMWg0ZnZmMG51cWoxajIza2k4Mm0zbmY5MW1tcW0wb2ZyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/31lPv5L3aIvTi/giphy.gif"; // Put your final GIF filename here
+            
+            // REPLACE THIS LINK with your direct GIF link
+            img.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBsMmxtMWg0ZnZmMG51cWoxajIza2k4Mm0zbmY5MW1tcW0wb2ZyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/31lPv5L3aIvTi/giphy.gif"; 
+            
             noBtn.style.display = "none";
             startHearts();
         });
 
-        // 3. Falling hearts function
         function startHearts() {
             setInterval(() => {
                 const heart = document.createElement('div');
@@ -132,11 +123,11 @@
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
                 document.body.appendChild(heart);
-
                 setTimeout(() => { heart.remove(); }, 5000);
             }, 300);
         }
     </script>
 </body>
 </html>
+
 
